@@ -1,0 +1,23 @@
+// DSCH Ver 3.0
+// 11/15/2023 11:51:45 AM
+// C:\Users\user\Desktop\vlsi\TEST1\Exp_05\half_adder.sch
+
+module half_adder( A,B,SUM,CARRY);
+ input A,B;
+ output SUM,CARRY;
+ wire w4,w5,w6,;
+ nand #(34) nand2_1(w4,B,A);
+ nand #(13) nand2_2(w5,w4,A);
+ nand #(13) nand2_3(w6,B,w4);
+ nand #(13) nand2_4(SUM,w6,w5);
+ nand #(13) nand2_5(CARRY,w4,w4);
+endmodule
+
+// Simulation parameters in Verilog Format
+always
+#1000 A=~A;
+#2000 B=~B;
+
+// Simulation parameters
+// A CLK 10 10
+// B CLK 20 20
