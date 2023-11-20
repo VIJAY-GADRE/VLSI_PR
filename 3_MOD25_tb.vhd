@@ -1,52 +1,80 @@
-library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.STD_LOGIC_UNSIGNED.ALL;
-use IEEE.NUMERIC_STD.ALL;
-
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+USE ieee.std_logic_unsigned.ALL;
+USE ieee.numeric_std.ALL;
+ 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
+--USE ieee.numeric_std.ALL;
+ 
+ENTITY mod25_tb IS
+END mod25_tb;
+ 
+ARCHITECTURE behavior OF mod25_tb IS 
+ 
+    -- Component Declaration for the Unit Under Test (UUT)
+ 
+    COMPONENT mod25
+    PORT(
+         rst : IN  std_logic;
+         pr : IN  std_logic;
+         clk : IN  std_logic;
+         dir : IN  std_logic;
+         Q : OUT  std_logic_vector(4 downto 0)
+        );
+    END COMPONENT;
+    
 
--- Uncomment the following library declaration if instantiating
--- any Xilinx primitives in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
+   --Inputs
+   signal rst : std_logic := '0';
+   signal pr : std_logic := '0';
+   signal clk : std_logic := '0';
+   signal dir : std_logic := '0';
 
-entity mod25 is
-    Port ( rst : in  STD_LOGIC;
-           pr : in  STD_LOGIC;
-           clk : in  STD_LOGIC;
-           dir : in  STD_LOGIC;
-           Q : out  STD_LOGIC_VECTOR (4 downto 0));
-end mod25;
+ 	--Outputs
+   signal Q : std_logic_vector(4 downto 0);
 
-architecture Behavioral of mod25 is
-signal Qtemp : STD_LOGIC_VECTOR(4 downto 0) := "00000";
-begin
-	process(rst, pr, clk, dir)
-	begin
-		if rst = '1' then
-			Qtemp <= (others => '0');
-		
-		elsif pr = '1' then
-			Qtemp <= (others => '1');
-		
-		elsif falling_edge(clk) then
-			if dir = '1' then
-				if Qtemp < 24 then
-					Qtemp <= Qtemp + 1;
-				else
-					Qtemp <= "00000";
-				end if;
-			else
-				if Qtemp > 7 then
-					Qtemp <= Qtemp - 1;
-				else
-					Qtemp <= "11111";
-				end if;
-			end if;
-		end if;
-	end process;
-	Q <= Qtemp;
+   -- Clock period definitions
+   constant clk_period : time := 10 ns;
+ 
+BEGIN
+ 
+	-- Instantiate the Unit Under Test (UUT)
+   uut: mod25 PORT MAP (
+          rst => rst,
+          pr => pr,
+          clk => clk,
+          dir => dir,
+          Q => Q
+        );
 
-end Behavioral;
+   -- Clock process definitions
+   clk_process :process
+   begin
+		clk <= '0';
+		wait for clk_period/2;
+		clk <= '1';
+		wait for clk_period/2;
+   end process;
+ 
+
+   -- Stimulus process
+   stim_proc_dir: process
+   begin		
+      dir <= not(dir);
+      wait for 100 ns;	
+   end process;
+	
+	stim_proc_rst: process
+   begin		
+      rst <= not(rst);
+      wait for 100 ns;	
+   end process;
+	
+	stim_proc_pr: process
+   begin		
+      pr <= not(pr);
+      wait for 100 ns;	
+   end process;
+
+END;
